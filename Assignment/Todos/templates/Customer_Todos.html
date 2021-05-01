@@ -1,0 +1,147 @@
+{% extends 'basic.html' %}
+{% block title %}
+Todos
+{% endblock %}
+{% block body%}
+<!--Add Todo Button-->
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-end" style="margin-top:20px;margin-right:20px;">
+    <a href="#exampleModalCenter" data-toggle="modal" data-target="#exampleModalCenter"><button type="button"
+            class="btn btn-primary me-md-2" data-bs-toggle="modal">
+            Add Todo
+        </button></a>
+    <form action="/electura/logout/" method="post">{%csrf_token%}
+        <input class="btn btn-danger " type="submit" value="Logout" />
+    </form>
+</div>
+
+<!--Moderators Username-->
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-end" style="margin-top:20px;margin-right:20px">
+    <div class="row my-5">
+        <div class="card" style="width: 20rem;margin-left:20px;">
+            <div class="card-body">
+                <h5 class="card-title" style="font-size:15px;">Avaiable Moderators</h5>
+                {% if muser%}
+                <ol type="1">
+                    {% for m in muser%}
+                    <li class="card-title">{{m.moderator.username}}</li>
+                    {% endfor%}
+                </ol>
+                {% else%}
+                <h5 class="card-title" style="font-size:15px;">Moderators are not Available</h5>
+                {% endif%}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Todo Form -->
+
+<div id="exampleModalCenter" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style=" background:none; " role="document">
+        <div class="modal-content" style=" background:none;">
+            <div class="modal-header bg-dark">
+                <h5 class="modal-title" id="exampleModalTitle" style="color:white;">New Todo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/electura/add_todo/" method="post">{%csrf_token%}
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label" style="color:white;">Title</label>
+                        <input type="text" class="form-control" id="exampleFormControlInput1" name="title"
+                            placeholder="xyz..">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput2" class="form-label" style="color:white;">Moderator
+                            Username</label>
+                        <input type="text" class="form-control" id="exampleFormControlInput2" name="musername"
+                            placeholder="dummy@123">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label"
+                            style="color:white;">Description</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" name="description"
+                            rows="3"></textarea>
+                    </div>
+                    <div class="text-center">
+                        <input type="submit" class="btn btn-danger" style="color:white;" value="Add">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <!--Created Tasks-->
+    <h1 class="text-left" style="color:white;">Created Tasks</h1>
+    <div class="container">
+        <div class="row my-5">
+            {% for data in todos%}
+            {% ifequal data.Customer username%}
+            {% if not data.Status%}
+            <div class="card" style="width:20rem;margin-left:20px;">
+                <div class="card-body">
+                    <h5 class="card-title{{data.id}}" style="font-size:15px;font-weight:bold;">{{data.title}}</h5>
+                    <p class="card-text" style="font-size:14px;">{{data.description}}</p>
+                    <p>
+                        <h6><span style="font-size:16px;">Assigned To : </span>{{data.Moderators}}</h6>
+                    </p>
+                </div>
+            </div>
+            {% endif%}
+            {% endifequal%}
+            {% if forloop.counter|divisibleby:3 and forloop.counter > 0 and not forloop.last %}
+        </div>
+        <div class="row  my-5">
+            {% endif%}
+            {% endfor%}
+            {% if not created%}
+            <div class="card" style="width: 20rem;margin-left:20px;">
+                <div class="card-body">
+                    <h5 class="card-title" style="font-size:15px;">No Task Created as of now.</h5>
+                </div>
+            </div>
+            {% endif%}
+        </div>
+    </div>
+
+    <!--Completed Tasks-->
+    <h1 class="text-left" style="color:white;">Completed Tasks</h1>
+    <div class="container">
+        <div class="row my-5">
+            {% for data in todos%}
+            {% ifequal data.Customer username%}
+            {% if data.Status%}
+            <div class="card" style="width: 20rem;margin-left:20px;">
+                <div class="card-body">
+                    <h5 class="card-title{{data.id}}" style="font-size:15px;font-weight:bold;">{{data.title}}</h5>
+                    <p class="card-text" style="font-size:14px;">{{data.description}}</p>
+                    <p>
+                        <h6><span style="font-size:16px;">Assigned To : </span>{{data.Moderators}}</h6>
+                    </p>
+                </div>
+            </div>
+            {% endif%}
+            {% endifequal %}
+            {% if forloop.counter|divisibleby:3 and forloop.counter > 0 and not forloop.last %}
+        </div>
+        <div class="row  my-5">
+            {% endif%}
+            {% endfor%}
+            {% if not completed%}
+            <div class="card" style="width: 20rem;margin-left:20px;">
+                <div class="card-body">
+                    <h5 class="card-title" style="font-size:15px;">No Task Completed as of now.</h5>
+                </div>
+            </div>
+            {% endif%}
+        </div>
+    </div>
+</div>
+{% endblock %}

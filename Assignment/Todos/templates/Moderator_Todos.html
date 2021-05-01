@@ -1,0 +1,90 @@
+{% extends 'basic.html' %}
+{% block title %}
+Todos
+{% endblock %}
+{% block body%}
+<!--Logout Button-->
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-end" style="margin-top:20px;margin-right:20px;">
+    <form action="/electura/logout/" method="post">{%csrf_token%}
+        <input class="btn btn-danger " type="submit" value="Logout" />
+    </form>
+</div>
+
+<div class="container">
+    <!--Assigned Tasks-->
+    <h1 class="text-left" style="color:white;">Assigned Tasks</h1>
+    <div class="container">
+        <div class="row my-5">
+            {% for data in todos%}
+            {% ifequal data.Moderators username%}
+            {% if not data.Status%}
+            <div class="card" style="width: 20rem;margin-left:20px;">
+                <div class="card-body">
+                    <h5 class="card-title{{data.id}}" style="font-size:15px;font-weight:bold;">{{data.title}}</h5>
+                    <p class="card-text" style="font-size:14px;">{{data.description}}</p>
+                    <p>
+                        <h6><span style="font-size:18px;">Assigned By : </span>{{data.Customer}}</h6>
+                    </p>
+                    <div class="d-grid gap-2 col-8 mx-auto">
+                        <form action="/electura/mark_complete/{{data.id}}" method="post">{%csrf_token%}
+                        <input type="hidden" value="{{data.title}}" name="title" >
+                        <input type="hidden" value="{{data.description}}" name="description">
+                        <input type="hidden" value="{{data.Customer}}" name="customer">
+                        <input type="hidden" value="{{username}}" name="moderator">
+                            <input class="btn btn-primary" type="submit" value="Mark Complete" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endif%}
+            {% endifequal%}
+            {% if forloop.counter|divisibleby:3 and forloop.counter > 0 and not forloop.last %}
+        </div>
+        <div class="row  my-5">
+            {% endif%}
+            {% endfor%}
+            {% if not assigned%}
+            <div class="card" style="width: 20rem;margin-left:20px;">
+                <div class="card-body">
+                    <h5 class="card-title" style="font-size:15px;">No Task Assigned as of now.</h5>
+                </div>
+            </div>
+            {% endif%}
+        </div>
+    </div>
+
+    <!--Finished Tasks-->
+    <h1 class="text-left" style="color:white;">Finished Tasks</h1>
+    <div class="container">
+        <div class="row my-5">
+            {% for data in todos%}
+            {% ifequal data.Moderators username%}
+            {% if data.Status%}
+            <div class="card" style="width: 20rem;margin-left:20px;">
+                <div class="card-body">
+                    <h5 class="card-title{{data.id}}" style="font-size:15px;font-weight:bold;">{{data.title}}</h5>
+                    <p class="card-text" style="font-size:14px;">{{data.description}}</p>
+                    <p>
+                        <h6><span style="font-size:18px;">Assigned By : </span>{{data.Customer}}</h6>
+                    </p>
+                </div>
+            </div>
+            {% endif%}
+            {% endifequal %}
+            {% if forloop.counter|divisibleby:3 and forloop.counter > 0 and not forloop.last %}
+        </div>
+        <div class="row  my-5">
+            {% endif%}
+            {% endfor%}
+            {% if not finished%}
+            <div class="card" style="width: 20rem;margin-left:20px;">
+                <div class="card-body">
+                    <h5 class="card-title" style="font-size:15px;">No Task Finished as of now.</h5>
+                </div>
+            </div>
+            {% endif%}
+        </div>
+    </div>
+</div>
+{% endblock %}
