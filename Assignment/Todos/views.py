@@ -110,7 +110,7 @@ def addTodo(request):
             if m.moderator.username==musername:
                 post_data={'Customer':cusername,'Moderators':musername,'title':title,'description':description,'Status':False}
                 response = requests.post('http://127.0.0.1:8000/electura/todos/0', data=post_data)
-                payload = {"head": "You have assigned a new Task by "+request.user.username, "body": title+"\n"+description}
+                payload = {"head": "You have a new Task ", "body": title+"\n"+description+"\n"+"Assigned By : "+request.user.username}
                 push_notification(m.moderator,payload)
                 return redirect('ctodos')
         return HttpResponse("Failure! Please enter a valid moderator username")
